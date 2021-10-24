@@ -13,7 +13,9 @@ pub struct Request {
 
 #[derive(Serialize)]
 pub struct Response {
-    number: u16
+    number: u16,
+    name: String,
+    types: Vec<String>
 }
 
 #[post("/pokemons", data = "<request>")]
@@ -27,7 +29,15 @@ pub fn serve(request: Json<Request>, state: &State<RepositoryState>) -> Result<J
     let res = create_pokemon::execute(state.repo.clone(), req);
 
     match res {
-        Ok(number) => Ok(Json(Response { number })),
+        Ok(create_pokemon::Response { 
+            number, 
+            name, 
+            types 
+        }) => Ok(Json(Response { 
+            number, 
+            name, 
+            types 
+        })),
         Err(create_pokemon::Error::BadRequest) => Err(Status::BadRequest),
         Err(create_pokemon::Error::Conflict) => Err(Status::BadRequest),
         Err(create_pokemon::Error::Unknown) => Err(Status::InternalServerError)
