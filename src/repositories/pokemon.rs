@@ -47,6 +47,7 @@ impl InMemoryRepository {
         }
     }
 
+    #[cfg(test)]
     pub fn with_error(self) -> Self {
         Self {
             error: true,

@@ -9,25 +9,24 @@ pub struct Request {
     pub types: Vec<String>
 }
 
-pub enum Response {
-    Ok(u16),
+pub enum Error {
     BadRequest,
     Conflict,
-    Error
+    Unknown
 }
 
-pub fn execute(repo: Arc<dyn Repository>, req: Request) -> Response {
+pub fn execute(repo: Arc<dyn Repository>, req: Request) -> Result<u16, Error> {
     match (
         PokemonNumber::try_from(req.number),
         PokemonName::try_from(req.name),
         PokemonTypes::try_from(req.types)
     ) {
         (Ok(number), Ok(name), Ok(types)) => match repo.insert(number, name, types) {
-            Insert::Ok(number) => Response::Ok(u16::from(number)),
-            Insert::Conflict => Response::Conflict,
-            Insert::Error => Response::Error
+            Insert::Ok(number) => Ok(u16::from(number)),
+            Insert::Conflict => Err(Error::Conflict),
+            Insert::Error => Err(Error::Unknown)
         },
-        _ => Response::BadRequest,
+        _ => Err(Error::BadRequest),
     }
 }
 
@@ -49,7 +48,7 @@ mod tests {
         let res = execute(repo, req);
 
         match res {
-            Response::Ok(res_number) => assert_eq!(res_number, number),
+            Ok(res_number) => assert_eq!(res_number, number),
             _ => unreachable!(),
         }
     }
@@ -66,7 +65,7 @@ mod tests {
         let res = execute(repo, req);
 
         match res {
-            Response::BadRequest => {},
+            Err(Error::BadRequest) => {},
             _ => unreachable!(),
         }
     }
@@ -90,7 +89,7 @@ mod tests {
         let res = execute(repo, req);
 
         match res {
-            Response::Conflict => {},
+            Err(Error::Conflict) => {},
             _ => unreachable!(),
         }
     }
@@ -107,7 +106,7 @@ mod tests {
         let res = execute(repo, req);
 
         match res {
-            Response::Error => {},
+            Err(Error::Unknown) => {},
             _ => unreachable!(),
         };
     }

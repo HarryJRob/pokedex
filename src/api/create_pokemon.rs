@@ -1,8 +1,8 @@
-use std::sync::Arc;
 use rocket::State;
+use rocket::http::Status;
 use rocket::serde::{Serialize, Deserialize, json::Json};
-use crate::repositories::pokemon::Repository;
 use crate::domain::create_pokemon;
+use crate::api::RepositoryState;
 
 #[derive(Deserialize, Clone)]
 pub struct Request {
@@ -11,20 +11,25 @@ pub struct Request {
     types: Vec<String>
 }
 
+#[derive(Serialize)]
+pub struct Response {
+    number: u16
+}
+
 #[post("/pokemons", data = "<request>")]
-pub fn serve(request: Json<Request>, state: &State<Arc<dyn Repository>>) -> String {
+pub fn serve(request: Json<Request>, state: &State<RepositoryState>) -> Result<Json<Response>, Status> {
     let req = create_pokemon::Request {
         number: request.number,
         name: request.name.clone(),
         types: request.types.clone()
     };
 
-    let res = create_pokemon::execute(state.inner().clone(), req);
+    let res = create_pokemon::execute(state.repo.clone(), req);
 
     match res {
-        create_pokemon::Response::Ok(id) => id.to_string(),
-        create_pokemon::Response::BadRequest => "BadRequest".to_string(),
-        create_pokemon::Response::Conflict => "Conflict".to_string(),
-        create_pokemon::Response::Error => "An unexpected error".to_string()
+        Ok(number) => Ok(Json(Response { number })),
+        Err(create_pokemon::Error::BadRequest) => Err(Status::BadRequest),
+        Err(create_pokemon::Error::Conflict) => Err(Status::BadRequest),
+        Err(create_pokemon::Error::Unknown) => Err(Status::InternalServerError)
     }
 }
