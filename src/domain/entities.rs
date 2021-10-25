@@ -1,7 +1,7 @@
 use std::convert::TryFrom;
 use std::cmp::PartialOrd;
 
-#[derive(PartialEq, Clone, PartialOrd, Ord, Eq)]
+#[derive(PartialEq, Clone, PartialOrd, Ord, Eq, Debug)]
 pub struct PokemonNumber(u16);
 
 impl TryFrom<u16> for PokemonNumber {
@@ -37,7 +37,7 @@ impl PokemonNumber {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct PokemonName(String);
 
 impl TryFrom<String> for PokemonName {
@@ -73,7 +73,7 @@ impl PokemonName {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct PokemonTypes(Vec<PokemonType>);
 
 impl TryFrom<Vec<String>> for PokemonTypes {
@@ -116,7 +116,7 @@ impl PokemonTypes {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 enum PokemonType {
     Electric,
     Fire
@@ -143,7 +143,7 @@ impl From<PokemonType> for String {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Pokemon {
     pub number: PokemonNumber,
     pub name: PokemonName,

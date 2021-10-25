@@ -1,4 +1,5 @@
 use std::sync::Mutex;
+use std::fmt::Debug;
 use crate::domain::entities::{Pokemon, PokemonName, PokemonNumber, PokemonTypes};
 
 
@@ -11,9 +12,22 @@ pub enum FetchAllError {
     Unknown
 }
 
+pub enum FetchOneError {
+    NotFound,
+    Unknown
+}
+
+#[derive(Debug)]
+pub enum DeleteError {
+    NotFound,
+    Unknown
+}
+
 pub trait Repository: Send + Sync {
     fn insert(&self, number: PokemonNumber, name: PokemonName, types: PokemonTypes) -> Result<Pokemon, InsertError>;
+    fn fetch_one(&self, number: PokemonNumber) -> Result<Pokemon, FetchOneError>;
     fn fetch_all(&self) -> Result<Vec<Pokemon>, FetchAllError>;
+    fn delete(&self, number: PokemonNumber) -> Result<(), DeleteError>;
 }
 
 pub struct InMemoryRepository {
@@ -41,10 +55,28 @@ impl Repository for InMemoryRepository {
         Ok(pokemon)
     }
 
+    fn fetch_one(&self, number: PokemonNumber) -> Result<Pokemon, FetchOneError> {
+        if self.error {
+            return Err(FetchOneError::Unknown);
+        };
+
+        let lock = match self.pokemons.lock() {
+            Ok(lock) => lock,
+            _ => return Err(FetchOneError::Unknown)
+        };
+
+        let pokemon = lock.iter().find(|p| p.number == number);
+
+        match pokemon {
+            Some(pokemon) => Ok(pokemon.clone()),
+            None => Err(FetchOneError::NotFound)
+        }
+    }
+
     fn fetch_all(&self) -> Result<Vec<Pokemon>, FetchAllError> {
         if self.error {
             return Err(FetchAllError::Unknown);
-        }
+        };
 
         let lock = match self.pokemons.lock() {
             Ok(lock) => lock,
@@ -54,6 +86,25 @@ impl Repository for InMemoryRepository {
         let mut pokemons = lock.to_vec();
         pokemons.sort_by(|a, b| a.number.cmp(&b.number));
         Ok(pokemons)
+    }
+
+    fn delete(&self, number: PokemonNumber) -> Result<(), DeleteError> {
+        if self.error {
+            return Err(DeleteError::Unknown);
+        }
+
+        let mut lock = match self.pokemons.lock() {
+            Ok(lock) => lock,
+            _ => return Err(DeleteError::Unknown)
+        };
+
+        let index = match lock.iter().position(|p| p.number == number) {
+            Some(index) => index,
+            None => return Err(DeleteError::NotFound)
+        };
+
+        lock.remove(index);
+        Ok(())
     }
 }
 
