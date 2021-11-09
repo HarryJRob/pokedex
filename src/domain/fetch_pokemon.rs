@@ -1,7 +1,6 @@
 use crate::domain::entities::{Pokemon, PokemonNumber};
 use crate::repositories::pokemon::{Repository, FetchOneError};
-use std::convert::TryFrom;
-use std::sync::Arc;
+use std::{convert::TryFrom, sync::Arc};
 
 pub struct Request {
     pub number: u16,

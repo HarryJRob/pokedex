@@ -1,5 +1,4 @@
-use std::sync::Mutex;
-use std::fmt::Debug;
+use std::{fmt::Debug, sync::Mutex};
 use crate::domain::entities::{Pokemon, PokemonName, PokemonNumber, PokemonTypes};
 
 
