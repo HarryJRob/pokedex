@@ -1,8 +1,8 @@
 use rocket::State;
 use rocket::http::Status;
 use rocket::serde::{Serialize, Deserialize, json::Json};
-use crate::domain::create_pokemon;
-use crate::api::RepositoryState;
+use core::create_pokemon;
+use super::RepositoryState;
 
 #[derive(Deserialize, Clone)]
 pub struct Request {

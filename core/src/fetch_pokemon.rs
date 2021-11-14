@@ -1,5 +1,5 @@
-use crate::domain::entities::{Pokemon, PokemonNumber};
-use crate::repositories::pokemon::{Repository, FetchOneError};
+use crate::entities::{Pokemon, PokemonNumber};
+use crate::repositories::{Repository, FetchOneError};
 use std::{convert::TryFrom, sync::Arc};
 
 pub struct Request {
@@ -43,8 +43,8 @@ pub fn execute(repo: Arc<dyn Repository>, req: Request) -> Result<Response, Erro
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::repositories::pokemon::InMemoryRepository;
-    use crate::domain::entities::{PokemonName, PokemonTypes};
+    use crate::entities::{PokemonName, PokemonTypes};
+    use crate::repositories::in_memory_repository::InMemoryRepository;
 
     impl Request {
         fn new(number: PokemonNumber) -> Self {
@@ -96,11 +96,7 @@ mod tests {
     #[test]
     fn it_should_return_the_pokemon_otherwise() {
         let repo = Arc::new(InMemoryRepository::new());
-        repo.insert(
-            PokemonNumber::pikachu(),
-            PokemonName::pikachu(),
-            PokemonTypes::pikachu()
-        )
+        repo.insert(Pokemon::pikachu())
         .ok();
         
         let req = Request::new(PokemonNumber::pikachu());

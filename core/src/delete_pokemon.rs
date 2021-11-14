@@ -1,5 +1,5 @@
-use crate::domain::entities::PokemonNumber;
-use crate::repositories::pokemon::{Repository, DeleteError};
+use crate::entities::PokemonNumber;
+use crate::repositories::{Repository, DeleteError};
 use std::{convert::TryFrom, sync::Arc};
 
 pub struct Request {
@@ -26,8 +26,8 @@ pub fn execute(repo: Arc<dyn Repository>, req: Request) -> Result<(), Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::domain::entities::{PokemonName, PokemonTypes};
-    use crate::repositories::pokemon::InMemoryRepository;
+    use crate::entities::Pokemon;
+    use crate::repositories::in_memory_repository::InMemoryRepository;
 
     impl Request {
         fn new(number: PokemonNumber) -> Self {
@@ -79,12 +79,7 @@ mod tests {
     #[test]
     fn it_should_return_ok_otherwise() {
         let repo = Arc::new(InMemoryRepository::new());
-        repo.insert(
-            PokemonNumber::pikachu(),
-            PokemonName::pikachu(),
-            PokemonTypes::pikachu()
-        )
-        .ok();
+        repo.insert(Pokemon::pikachu()).ok();
 
         let req = Request::new(PokemonNumber::pikachu());
 

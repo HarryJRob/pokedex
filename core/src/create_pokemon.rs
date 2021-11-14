@@ -1,6 +1,5 @@
-use crate::domain::entities::{PokemonNumber, PokemonName, PokemonTypes};
-use crate::repositories::pokemon::{Repository, InsertError};
-use crate::domain::entities::Pokemon;
+use crate::entities::{Pokemon, PokemonNumber, PokemonName, PokemonTypes};
+use crate::repositories::{Repository, InsertError};
 use std::{convert::TryFrom, sync::Arc};
 
 pub struct Request {
@@ -27,7 +26,9 @@ pub fn execute(repo: Arc<dyn Repository>, req: Request) -> Result<Response, Erro
         PokemonName::try_from(req.name),
         PokemonTypes::try_from(req.types)
     ) {
-        (Ok(number), Ok(name), Ok(types)) => match repo.insert(number, name, types) {
+        (Ok(number), 
+        Ok(name), 
+        Ok(types)) => match repo.insert(Pokemon::new(number, name, types)) {
             Ok(Pokemon {
                 number,
                 name,
@@ -47,7 +48,7 @@ pub fn execute(repo: Arc<dyn Repository>, req: Request) -> Result<Response, Erro
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::repositories::pokemon::InMemoryRepository;
+    use crate::repositories::in_memory_repository::InMemoryRepository;
 
     #[test]
     fn it_should_return_pokemon_otherwise() {
@@ -99,7 +100,7 @@ mod tests {
 
         let repo = Arc::new(InMemoryRepository::new());
         
-        repo.insert(number, name, types).ok();
+        repo.insert(Pokemon::new(number, name, types)).ok();
 
         let req = Request::new(
             PokemonNumber::pikachu(),

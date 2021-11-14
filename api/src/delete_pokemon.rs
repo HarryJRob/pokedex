@@ -1,8 +1,8 @@
 use rocket::State;
 use rocket::http::Status;
 use rocket::serde::Serialize;
-use crate::domain::delete_pokemon;
-use crate::api::RepositoryState;
+use core::delete_pokemon;
+use super::RepositoryState;
 
 #[derive(Serialize)]
 pub struct Response {

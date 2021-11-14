@@ -1,5 +1,6 @@
 use std::sync::Arc;
-use crate::repositories::pokemon::{InMemoryRepository, Repository};
+use core::repositories::Repository;
+use core::repositories::in_memory_repository::InMemoryRepository;
 
 mod health;
 mod create_pokemon;
@@ -11,7 +12,11 @@ pub struct RepositoryState {
     repo: Arc<dyn Repository>
 }
 
-pub fn rocket() -> rocket::Rocket<rocket::Build> {
+#[macro_use]
+extern crate rocket;
+
+#[launch]
+async fn rocket() -> _ {
     let repo = Arc::new(InMemoryRepository::new());
 
     rocket::build()

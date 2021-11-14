@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use crate::repositories::pokemon::{Repository, FetchAllError};
+use crate::repositories::{Repository, FetchAllError};
 
 pub struct Response {
     pub number: u16,
@@ -28,8 +28,8 @@ pub fn execute(repo: Arc<dyn Repository>) -> Result<Vec<Response>, Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::repositories::pokemon::InMemoryRepository;
-    use crate::domain::entities::{PokemonNumber, PokemonName, PokemonTypes};
+    use crate::entities::{Pokemon, PokemonName, PokemonNumber, PokemonTypes};
+    use crate::repositories::in_memory_repository::InMemoryRepository;
 
     #[test]
     fn it_should_return_an_unknown_error_when_an_unexpected_error_happens() {
@@ -46,16 +46,8 @@ mod tests {
     #[test]
     fn it_should_return_all_the_pokemon_ordered_by_increasing_number_otherwise() {
         let repo = Arc::new(InMemoryRepository::new());
-        repo.insert(
-            PokemonNumber::pikachu(),
-            PokemonName::pikachu(),
-            PokemonTypes::pikachu()
-        ).ok();
-        repo.insert(
-            PokemonNumber::charmander(),
-            PokemonName::charmander(),
-            PokemonTypes::charmander()
-        ).ok();
+        repo.insert(Pokemon::pikachu()).ok();
+        repo.insert(Pokemon::charmander()).ok();
 
         let res = execute(repo);
 

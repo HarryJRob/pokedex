@@ -158,3 +158,22 @@ impl Pokemon {
         }
     }
 }
+
+#[cfg(test)]
+impl Pokemon {
+    pub fn pikachu() -> Self {
+        Self {
+            number: PokemonNumber::pikachu(),
+            name: PokemonName::pikachu(),
+            types: PokemonTypes::pikachu()
+        }
+    }
+
+    pub fn charmander() -> Self {
+        Self {
+            number: PokemonNumber::charmander(),
+            name: PokemonName::charmander(),
+            types: PokemonTypes::charmander()
+        }
+    }
+}

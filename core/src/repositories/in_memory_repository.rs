@@ -1,33 +1,6 @@
-use std::{fmt::Debug, sync::Mutex};
-use crate::domain::entities::{Pokemon, PokemonName, PokemonNumber, PokemonTypes};
-
-
-pub enum InsertError {
-    Conflict,
-    Unknown
-}
-
-pub enum FetchAllError {
-    Unknown
-}
-
-pub enum FetchOneError {
-    NotFound,
-    Unknown
-}
-
-#[derive(Debug)]
-pub enum DeleteError {
-    NotFound,
-    Unknown
-}
-
-pub trait Repository: Send + Sync {
-    fn insert(&self, number: PokemonNumber, name: PokemonName, types: PokemonTypes) -> Result<Pokemon, InsertError>;
-    fn fetch_one(&self, number: PokemonNumber) -> Result<Pokemon, FetchOneError>;
-    fn fetch_all(&self) -> Result<Vec<Pokemon>, FetchAllError>;
-    fn delete(&self, number: PokemonNumber) -> Result<(), DeleteError>;
-}
+use crate::entities::{Pokemon, PokemonNumber};
+use crate::repositories::{Repository, InsertError, FetchOneError, FetchAllError, DeleteError};
+use std::sync::Mutex;
 
 pub struct InMemoryRepository {
     error: bool,
@@ -35,7 +8,7 @@ pub struct InMemoryRepository {
 }
 
 impl Repository for InMemoryRepository {
-    fn insert(&self, number: PokemonNumber, name: PokemonName, types: PokemonTypes) -> Result<Pokemon, InsertError> {
+    fn insert(&self, pokemon: Pokemon) -> Result<Pokemon, InsertError> {
         if self.error {
             return Err(InsertError::Unknown);
         }
@@ -45,10 +18,9 @@ impl Repository for InMemoryRepository {
             _ => return Err(InsertError::Unknown),
         };
 
-        if lock.iter().any(|pokemon| pokemon.number == number) {
+        if lock.iter().any(|existing_pokemon| existing_pokemon.number == pokemon.number) {
             return Err(InsertError::Conflict);
         }
-        let pokemon = Pokemon::new(number, name, types);
         lock.push(pokemon.clone());
         
         Ok(pokemon)
