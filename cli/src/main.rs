@@ -1,12 +1,8 @@
-#[macro_use]
-extern crate clap;
-
 use core::repositories::in_memory_repository::InMemoryRepository;
 mod commands;
 
 use std::sync::Arc;
-use clap::{App, Arg};
-use commands::create_pokemon;
+use commands::{create_pokemon, delete_pokemon, fetch_all_pokemon, fetch_pokemon};
 use dialoguer::{Select, theme::ColorfulTheme};
 
 fn main() {
@@ -32,7 +28,10 @@ fn main() {
         };
 
         match command {
+            0 => fetch_all_pokemon::run(repo.clone()),
+            1 => fetch_pokemon::run(repo.clone()),
             2 => create_pokemon::run(repo.clone()),
+            3 => delete_pokemon::run(repo.clone()),
             4 => break,
             _ => continue
         }

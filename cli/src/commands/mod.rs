@@ -1,6 +1,9 @@
 use dialoguer::{Input, MultiSelect};
 
 pub mod create_pokemon;
+pub mod delete_pokemon;
+pub mod fetch_pokemon;
+pub mod fetch_all_pokemon;
 
 pub fn prompt_number() -> Result<u16, ()> {
     match Input::new().with_prompt("Pokemon number").interact_text() {
