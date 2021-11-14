@@ -1,5 +1,5 @@
 use crate::entities::{Pokemon, PokemonNumber};
-use crate::repositories::{Repository, InsertError, FetchOneError, FetchAllError, DeleteError};
+use crate::repositories::{DeleteError, FetchAllError, FetchOneError, InsertError, Repository};
 use std::sync::Mutex;
 
 pub struct InMemoryRepository {
@@ -18,11 +18,14 @@ impl Repository for InMemoryRepository {
             _ => return Err(InsertError::Unknown),
         };
 
-        if lock.iter().any(|existing_pokemon| existing_pokemon.number == pokemon.number) {
+        if lock
+            .iter()
+            .any(|existing_pokemon| existing_pokemon.number == pokemon.number)
+        {
             return Err(InsertError::Conflict);
         }
         lock.push(pokemon.clone());
-        
+
         Ok(pokemon)
     }
 
@@ -33,14 +36,14 @@ impl Repository for InMemoryRepository {
 
         let lock = match self.pokemons.lock() {
             Ok(lock) => lock,
-            _ => return Err(FetchOneError::Unknown)
+            _ => return Err(FetchOneError::Unknown),
         };
 
         let pokemon = lock.iter().find(|p| p.number == number);
 
         match pokemon {
             Some(pokemon) => Ok(pokemon.clone()),
-            None => Err(FetchOneError::NotFound)
+            None => Err(FetchOneError::NotFound),
         }
     }
 
@@ -51,7 +54,7 @@ impl Repository for InMemoryRepository {
 
         let lock = match self.pokemons.lock() {
             Ok(lock) => lock,
-            _ => return Err(FetchAllError::Unknown)
+            _ => return Err(FetchAllError::Unknown),
         };
 
         let mut pokemons = lock.to_vec();
@@ -66,12 +69,12 @@ impl Repository for InMemoryRepository {
 
         let mut lock = match self.pokemons.lock() {
             Ok(lock) => lock,
-            _ => return Err(DeleteError::Unknown)
+            _ => return Err(DeleteError::Unknown),
         };
 
         let index = match lock.iter().position(|p| p.number == number) {
             Some(index) => index,
-            None => return Err(DeleteError::NotFound)
+            None => return Err(DeleteError::NotFound),
         };
 
         lock.remove(index);
@@ -82,7 +85,7 @@ impl Repository for InMemoryRepository {
 impl InMemoryRepository {
     pub fn new() -> Self {
         let pokemons: Mutex<Vec<Pokemon>> = Mutex::new(vec![]);
-        Self { 
+        Self {
             error: false,
             pokemons,
         }

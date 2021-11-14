@@ -86,7 +86,7 @@ impl TryFrom<Vec<String>> for PokemonTypes {
             for t in ts.iter() {
                 match PokemonType::try_from(String::from(t)) {
                     Ok(pt) => pts.push(pt),
-                    _ => return Err(())
+                    _ => return Err(()),
                 }
             }
             Ok(Self(pts))
@@ -118,7 +118,7 @@ impl PokemonTypes {
 #[derive(Clone, Debug)]
 enum PokemonType {
     Electric,
-    Fire
+    Fire,
 }
 
 impl TryFrom<String> for PokemonType {
@@ -128,7 +128,7 @@ impl TryFrom<String> for PokemonType {
         match t.as_str() {
             "Electric" => Ok(Self::Electric),
             "Fire" => Ok(Self::Fire),
-            _ => Err(())
+            _ => Err(()),
         }
     }
 }
@@ -146,7 +146,7 @@ impl From<PokemonType> for String {
 pub struct Pokemon {
     pub number: PokemonNumber,
     pub name: PokemonName,
-    pub types: PokemonTypes
+    pub types: PokemonTypes,
 }
 
 impl Pokemon {
@@ -154,7 +154,7 @@ impl Pokemon {
         Self {
             number,
             name,
-            types
+            types,
         }
     }
 }
@@ -165,7 +165,7 @@ impl Pokemon {
         Self {
             number: PokemonNumber::pikachu(),
             name: PokemonName::pikachu(),
-            types: PokemonTypes::pikachu()
+            types: PokemonTypes::pikachu(),
         }
     }
 
@@ -173,7 +173,7 @@ impl Pokemon {
         Self {
             number: PokemonNumber::charmander(),
             name: PokemonName::charmander(),
-            types: PokemonTypes::charmander()
+            types: PokemonTypes::charmander(),
         }
     }
 }

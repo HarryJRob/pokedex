@@ -1,15 +1,15 @@
 use crate::entities::PokemonNumber;
-use crate::repositories::{Repository, DeleteError};
+use crate::repositories::{DeleteError, Repository};
 use std::{convert::TryFrom, sync::Arc};
 
 pub struct Request {
-    pub number: u16
+    pub number: u16,
 }
 
 pub enum Error {
     BadRequest,
     NotFound,
-    Unknown
+    Unknown,
 }
 
 pub fn execute(repo: Arc<dyn Repository>, req: Request) -> Result<(), Error> {
@@ -17,9 +17,9 @@ pub fn execute(repo: Arc<dyn Repository>, req: Request) -> Result<(), Error> {
         Ok(number) => match repo.delete(number) {
             Ok(()) => Ok(()),
             Err(DeleteError::NotFound) => Err(Error::NotFound),
-            Err(DeleteError::Unknown) => Err(Error::Unknown)
+            Err(DeleteError::Unknown) => Err(Error::Unknown),
         },
-        _ => return Err(Error::BadRequest)
+        _ => return Err(Error::BadRequest),
     }
 }
 
@@ -32,7 +32,7 @@ mod tests {
     impl Request {
         fn new(number: PokemonNumber) -> Self {
             Self {
-                number: u16::from(number)
+                number: u16::from(number),
             }
         }
     }
@@ -45,7 +45,7 @@ mod tests {
         let res = execute(repo, req);
 
         match res {
-            Err(Error::Unknown) => {},
+            Err(Error::Unknown) => {}
             _ => unreachable!(),
         };
     }
@@ -58,7 +58,7 @@ mod tests {
         let res = execute(repo, req);
 
         match res {
-            Err(Error::BadRequest) => {},
+            Err(Error::BadRequest) => {}
             _ => unreachable!(),
         };
     }
@@ -71,7 +71,7 @@ mod tests {
         let res = execute(repo, req);
 
         match res {
-            Err(Error::NotFound) => {},
+            Err(Error::NotFound) => {}
             _ => unreachable!(),
         };
     }
@@ -86,8 +86,8 @@ mod tests {
         let res = execute(repo, req);
 
         match res {
-            Ok(()) => {},
-            _ => unreachable!()
+            Ok(()) => {}
+            _ => unreachable!(),
         };
     }
 }

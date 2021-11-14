@@ -1,11 +1,13 @@
-use rocket::serde::{Serialize, json::Json};
+use rocket::serde::{json::Json, Serialize};
 
 #[derive(Serialize)]
 pub struct Response {
-    message: String
+    message: String,
 }
 
 #[get("/health")]
 pub fn serve() -> Json<Response> {
-    Json(Response { message: "Health Check...".to_string() })
+    Json(Response {
+        message: "Health Check...".to_string(),
+    })
 }

@@ -1,10 +1,10 @@
+use crate::repositories::{FetchAllError, Repository};
 use std::sync::Arc;
-use crate::repositories::{Repository, FetchAllError};
 
 pub struct Response {
     pub number: u16,
     pub name: String,
-    pub types: Vec<String>
+    pub types: Vec<String>,
 }
 
 pub enum Error {
@@ -21,7 +21,7 @@ pub fn execute(repo: Arc<dyn Repository>) -> Result<Vec<Response>, Error> {
                 types: Vec::<String>::from(p.types),
             })
             .collect::<Vec<Response>>()),
-        Err(FetchAllError::Unknown) => Err(Error::Unknown)
+        Err(FetchAllError::Unknown) => Err(Error::Unknown),
     }
 }
 
@@ -38,7 +38,7 @@ mod tests {
         let res = execute(repo);
 
         match res {
-            Err(Error::Unknown) => {},
+            Err(Error::Unknown) => {}
             _ => unreachable!(),
         }
     }
@@ -55,11 +55,14 @@ mod tests {
             Ok(res) => {
                 assert_eq!(res[0].number, u16::from(PokemonNumber::charmander()));
                 assert_eq!(res[0].name, String::from(PokemonName::charmander()));
-                assert_eq!(res[0].types, Vec::<String>::from(PokemonTypes::charmander()));
+                assert_eq!(
+                    res[0].types,
+                    Vec::<String>::from(PokemonTypes::charmander())
+                );
                 assert_eq!(res[1].number, u16::from(PokemonNumber::pikachu()));
                 assert_eq!(res[1].name, String::from(PokemonName::pikachu()));
                 assert_eq!(res[1].types, Vec::<String>::from(PokemonTypes::pikachu()));
-            },
+            }
             _ => unreachable!(),
         }
     }

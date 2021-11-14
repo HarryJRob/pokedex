@@ -1,11 +1,11 @@
-use crate::entities::{Pokemon, PokemonNumber, PokemonName, PokemonTypes};
-use crate::repositories::{Repository, InsertError};
+use crate::entities::{Pokemon, PokemonName, PokemonNumber, PokemonTypes};
+use crate::repositories::{InsertError, Repository};
 use std::{convert::TryFrom, sync::Arc};
 
 pub struct Request {
     pub number: u16,
     pub name: String,
-    pub types: Vec<String>
+    pub types: Vec<String>,
 }
 
 pub struct Response {
@@ -17,18 +17,16 @@ pub struct Response {
 pub enum Error {
     BadRequest,
     Conflict,
-    Unknown
+    Unknown,
 }
 
 pub fn execute(repo: Arc<dyn Repository>, req: Request) -> Result<Response, Error> {
     match (
         PokemonNumber::try_from(req.number),
         PokemonName::try_from(req.name),
-        PokemonTypes::try_from(req.types)
+        PokemonTypes::try_from(req.types),
     ) {
-        (Ok(number), 
-        Ok(name), 
-        Ok(types)) => match repo.insert(Pokemon::new(number, name, types)) {
+        (Ok(number), Ok(name), Ok(types)) => match repo.insert(Pokemon::new(number, name, types)) {
             Ok(Pokemon {
                 number,
                 name,
@@ -39,7 +37,7 @@ pub fn execute(repo: Arc<dyn Repository>, req: Request) -> Result<Response, Erro
                 types: Vec::<String>::from(types),
             }),
             Err(InsertError::Conflict) => Err(Error::Conflict),
-            Err(InsertError::Unknown) => Err(Error::Unknown)
+            Err(InsertError::Unknown) => Err(Error::Unknown),
         },
         _ => Err(Error::BadRequest),
     }
@@ -81,13 +79,13 @@ mod tests {
         let req = Request::new(
             PokemonNumber::pikachu(),
             PokemonName::bad(),
-            PokemonTypes::pikachu()
+            PokemonTypes::pikachu(),
         );
 
         let res = execute(repo, req);
 
         match res {
-            Err(Error::BadRequest) => {},
+            Err(Error::BadRequest) => {}
             _ => unreachable!(),
         }
     }
@@ -99,7 +97,7 @@ mod tests {
         let types = PokemonTypes::try_from(vec![String::from("Electric")]).unwrap();
 
         let repo = Arc::new(InMemoryRepository::new());
-        
+
         repo.insert(Pokemon::new(number, name, types)).ok();
 
         let req = Request::new(
@@ -111,7 +109,7 @@ mod tests {
         let res = execute(repo, req);
 
         match res {
-            Err(Error::Conflict) => {},
+            Err(Error::Conflict) => {}
             _ => unreachable!(),
         }
     }
@@ -128,7 +126,7 @@ mod tests {
         let res = execute(repo, req);
 
         match res {
-            Err(Error::Unknown) => {},
+            Err(Error::Unknown) => {}
             _ => unreachable!(),
         };
     }

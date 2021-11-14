@@ -7,7 +7,7 @@ use super::prompt_number;
 struct Response {
     number: u16,
     name: String,
-    types: Vec<String>
+    types: Vec<String>,
 }
 
 pub fn run(repo: Arc<dyn Repository>) {
@@ -23,14 +23,15 @@ pub fn run(repo: Arc<dyn Repository>) {
 
     match fetch_pokemon::execute(repo, req) {
         Ok(res) => println!(
-            "{:?}", 
+            "{:?}",
             Response {
                 number: res.number,
                 name: res.name,
                 types: res.types
-            }),
+            }
+        ),
         Err(fetch_pokemon::Error::BadRequest) => println!("The request is invalid"),
         Err(fetch_pokemon::Error::NotFound) => println!("The pokemon does not exist"),
-        Err(fetch_pokemon::Error::Unknown) => println!("An unknown error occurred")
+        Err(fetch_pokemon::Error::Unknown) => println!("An unknown error occurred"),
     }
 }

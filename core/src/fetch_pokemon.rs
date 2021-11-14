@@ -1,5 +1,5 @@
 use crate::entities::{Pokemon, PokemonNumber};
-use crate::repositories::{Repository, FetchOneError};
+use crate::repositories::{FetchOneError, Repository};
 use std::{convert::TryFrom, sync::Arc};
 
 pub struct Request {
@@ -9,13 +9,13 @@ pub struct Request {
 pub struct Response {
     pub number: u16,
     pub name: String,
-    pub types: Vec<String>
+    pub types: Vec<String>,
 }
 
 pub enum Error {
     BadRequest,
     NotFound,
-    Unknown
+    Unknown,
 }
 
 pub fn execute(repo: Arc<dyn Repository>, req: Request) -> Result<Response, Error> {
@@ -28,16 +28,15 @@ pub fn execute(repo: Arc<dyn Repository>, req: Request) -> Result<Response, Erro
         Ok(Pokemon {
             number,
             name,
-            types
+            types,
         }) => Ok(Response {
             number: u16::from(number),
             name: String::from(name),
             types: Vec::<String>::from(types),
         }),
         Err(FetchOneError::NotFound) => return Err(Error::NotFound),
-        Err(FetchOneError::Unknown) => return Err(Error::Unknown)
+        Err(FetchOneError::Unknown) => return Err(Error::Unknown),
     }
-
 }
 
 #[cfg(test)]
@@ -49,7 +48,7 @@ mod tests {
     impl Request {
         fn new(number: PokemonNumber) -> Self {
             Request {
-                number: u16::from(number)
+                number: u16::from(number),
             }
         }
     }
@@ -62,7 +61,7 @@ mod tests {
         let res = execute(repo, req);
 
         match res {
-            Err(Error::Unknown) => {},
+            Err(Error::Unknown) => {}
             _ => unreachable!(),
         };
     }
@@ -75,7 +74,7 @@ mod tests {
         let res = execute(repo, req);
 
         match res {
-            Err(Error::BadRequest) => {},
+            Err(Error::BadRequest) => {}
             _ => unreachable!(),
         };
     }
@@ -88,7 +87,7 @@ mod tests {
         let res = execute(repo, req);
 
         match res {
-            Err(Error::NotFound) => {},
+            Err(Error::NotFound) => {}
             _ => unreachable!(),
         };
     }
@@ -96,9 +95,8 @@ mod tests {
     #[test]
     fn it_should_return_the_pokemon_otherwise() {
         let repo = Arc::new(InMemoryRepository::new());
-        repo.insert(Pokemon::pikachu())
-        .ok();
-        
+        repo.insert(Pokemon::pikachu()).ok();
+
         let req = Request::new(PokemonNumber::pikachu());
 
         let res = execute(repo, req);
@@ -108,8 +106,8 @@ mod tests {
                 assert_eq!(res.number, u16::from(PokemonNumber::pikachu()));
                 assert_eq!(res.name, String::from(PokemonName::pikachu()));
                 assert_eq!(res.types, Vec::<String>::from(PokemonTypes::pikachu()));
-            },
-            _ => unreachable!()
+            }
+            _ => unreachable!(),
         }
     }
 }

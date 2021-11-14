@@ -1,9 +1,9 @@
 use core::repositories::in_memory_repository::InMemoryRepository;
 mod commands;
 
-use std::sync::Arc;
 use commands::{create_pokemon, delete_pokemon, fetch_all_pokemon, fetch_pokemon};
-use dialoguer::{Select, theme::ColorfulTheme};
+use dialoguer::{theme::ColorfulTheme, Select};
+use std::sync::Arc;
 
 fn main() {
     let repo = Arc::new(InMemoryRepository::new());
@@ -13,7 +13,7 @@ fn main() {
         "Fetch a pokemon",
         "Create a pokemon",
         "Delete a pokemon",
-        "Exit"
+        "Exit",
     ];
 
     loop {
@@ -24,7 +24,7 @@ fn main() {
             .interact()
         {
             Ok(index) => index,
-            _ => continue
+            _ => continue,
         };
 
         match command {
@@ -33,7 +33,7 @@ fn main() {
             2 => create_pokemon::run(repo.clone()),
             3 => delete_pokemon::run(repo.clone()),
             4 => break,
-            _ => continue
+            _ => continue,
         }
     }
 }

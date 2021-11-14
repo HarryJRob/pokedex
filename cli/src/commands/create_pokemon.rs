@@ -1,5 +1,5 @@
-use core::repositories::Repository;
 use core::create_pokemon;
+use core::repositories::Repository;
 use std::sync::Arc;
 
 use super::{prompt_name, prompt_number, prompt_type};
@@ -13,7 +13,7 @@ pub fn run(repo: Arc<dyn Repository>) {
         (Ok(number), Ok(name), Ok(types)) => create_pokemon::Request {
             number,
             name,
-            types
+            types,
         },
         _ => {
             println!("An error occurred while creating a pokemon");
@@ -25,6 +25,6 @@ pub fn run(repo: Arc<dyn Repository>) {
         Ok(res) => println!("Pokemon '{}' created with id '{}'", res.name, res.number),
         Err(create_pokemon::Error::BadRequest) => println!("The request is invalid"),
         Err(create_pokemon::Error::Conflict) => println!("The Pokemon already exists"),
-        Err(create_pokemon::Error::Unknown) => println!("An unknown error occurred")
+        Err(create_pokemon::Error::Unknown) => println!("An unknown error occurred"),
     }
 }

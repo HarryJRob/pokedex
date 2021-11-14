@@ -1,14 +1,14 @@
-use rocket::State;
+use super::RepositoryState;
+use core::delete_pokemon;
 use rocket::http::Status;
 use rocket::serde::Serialize;
-use core::delete_pokemon;
-use super::RepositoryState;
+use rocket::State;
 
 #[derive(Serialize)]
 pub struct Response {
     number: u16,
     name: String,
-    types: Vec<String>
+    types: Vec<String>,
 }
 
 #[delete("/pokemons/<number>")]
@@ -21,6 +21,6 @@ pub fn serve(number: u16, state: &State<RepositoryState>) -> Status {
         Ok(()) => Status::Ok,
         Err(delete_pokemon::Error::NotFound) => Status::NotFound,
         Err(delete_pokemon::Error::BadRequest) => Status::BadRequest,
-        Err(delete_pokemon::Error::Unknown) => Status::InternalServerError
+        Err(delete_pokemon::Error::Unknown) => Status::InternalServerError,
     }
 }

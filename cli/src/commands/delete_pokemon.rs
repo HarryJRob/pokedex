@@ -7,7 +7,7 @@ use super::prompt_number;
 struct Response {
     number: u16,
     name: String,
-    types: Vec<String>
+    types: Vec<String>,
 }
 
 pub fn run(repo: Arc<dyn Repository>) {
@@ -25,6 +25,6 @@ pub fn run(repo: Arc<dyn Repository>) {
         Ok(()) => println!("The Pokemon has been deleted"),
         Err(delete_pokemon::Error::BadRequest) => println!("The request is invalid"),
         Err(delete_pokemon::Error::NotFound) => println!("The pokemon does not exist"),
-        Err(delete_pokemon::Error::Unknown) => println!("An unknown error occurred")
+        Err(delete_pokemon::Error::Unknown) => println!("An unknown error occurred"),
     }
 }

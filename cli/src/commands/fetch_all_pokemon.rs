@@ -5,9 +5,8 @@ use std::sync::Arc;
 struct Response {
     number: u16,
     name: String,
-    types: Vec<String>
+    types: Vec<String>,
 }
-
 
 pub fn run(repo: Arc<dyn Repository>) {
     match fetch_all_pokemon::execute(repo) {
@@ -21,6 +20,6 @@ pub fn run(repo: Arc<dyn Repository>) {
                 }
             )
         }),
-        Err(fetch_all_pokemon::Error::Unknown) => println!("An unknown error occurred")
+        Err(fetch_all_pokemon::Error::Unknown) => println!("An unknown error occurred"),
     }
 }

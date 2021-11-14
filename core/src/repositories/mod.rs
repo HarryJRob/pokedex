@@ -1,25 +1,24 @@
-
 use super::entities::{Pokemon, PokemonNumber};
 
 pub mod in_memory_repository;
 
 pub enum InsertError {
     Conflict,
-    Unknown
+    Unknown,
 }
 
 pub enum FetchAllError {
-    Unknown
+    Unknown,
 }
 
 pub enum FetchOneError {
     NotFound,
-    Unknown
+    Unknown,
 }
 
 pub enum DeleteError {
     NotFound,
-    Unknown
+    Unknown,
 }
 
 pub trait Repository: Send + Sync {
