@@ -12,7 +12,6 @@ use tui::widgets::{Block, Borders, List, ListItem, ListState};
 use tui::{Frame, Terminal};
 
 #[derive(Clone)]
-
 struct Pokemon {
     number: u16,
     name: String,
@@ -20,9 +19,8 @@ struct Pokemon {
 }
 
 #[derive(Clone)]
-
 enum AppMode {
-    View,
+    Browse,
     Add,
 }
 
@@ -35,7 +33,7 @@ struct App {
 impl App {
     pub fn new() -> Self {
         Self {
-            mode: AppMode::View,
+            mode: AppMode::Browse,
             pokemons: vec![],
         }
     }
@@ -68,17 +66,25 @@ fn main() -> Result<(), io::Error> {
 
 fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<()> {
     loop {
-        app.pokemons = vec![Pokemon {
-            number: 25,
-            name: "Pikachu".to_string(),
-            types: vec!["Electric".to_string()],
-        }];
+        app.pokemons = vec![
+            Pokemon {
+                number: 25,
+                name: "Pikachu".to_string(),
+                types: vec!["Electric".to_string()],
+            },
+            Pokemon {
+                number: 4,
+                name: "Charmander".to_string(),
+                types: vec!["Fire".to_string()],
+            },
+        ];
 
         terminal.draw(|f| ui(f, app.clone()))?;
 
         if let Event::Key(key) = event::read()? {
             match key.code {
                 KeyCode::Char('q') => return Ok(()),
+                KeyCode::Char('i') => app.mode = AppMode::Add,
                 _ => {}
             }
         }
@@ -91,28 +97,24 @@ fn ui<B: Backend>(f: &mut Frame<B>, app: App) {
         .direction(Direction::Vertical)
         .split(f.size());
 
-    let main_body = match app.mode {
-        AppMode::View => {
-            // Take all the pokemon and render then into a block
-            let items: Vec<ListItem> = app
-                .pokemons
-                .into_iter()
-                .map(|p| {
-                    let name = Span::from(p.name);
-                    ListItem::new(name).style(Style::default().fg(Color::Black).bg(Color::White))
-                })
-                .collect();
+    let main_body = {
+        let items: Vec<ListItem> = app
+            .pokemons
+            .into_iter()
+            .map(|p| {
+                let name = Span::from(p.name);
+                ListItem::new(name).style(Style::default().fg(Color::Black).bg(Color::White))
+            })
+            .collect();
 
-            List::new(items)
-                .block(Block::default().borders(Borders::ALL).title("List"))
-                .highlight_style(
-                    Style::default()
-                        .bg(Color::LightGreen)
-                        .add_modifier(Modifier::BOLD),
-                )
-                .highlight_symbol(">> ")
-        }
-        AppMode::Add => panic!("Not yet implemented"),
+        List::new(items)
+            .block(Block::default().borders(Borders::ALL).title("List"))
+            .highlight_style(
+                Style::default()
+                    .bg(Color::LightGreen)
+                    .add_modifier(Modifier::BOLD),
+            )
+            .highlight_symbol(">> ")
     };
 
     let toolbar = Block::default().borders(Borders::ALL);
