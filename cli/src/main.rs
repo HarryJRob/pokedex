@@ -1,4 +1,4 @@
-use core::repositories::in_memory_repository::InMemoryRepository;
+use core::repositories::mysql_repository::MySqlRepository;
 mod commands;
 
 use commands::{create_pokemon, delete_pokemon, fetch_all_pokemon, fetch_pokemon};
@@ -6,7 +6,9 @@ use dialoguer::{theme::ColorfulTheme, Select};
 use std::sync::Arc;
 
 fn main() {
-    let repo = Arc::new(InMemoryRepository::new());
+    let repo = Arc::new(MySqlRepository::try_new(
+        "mysql://admin:admin@localhost/pokedex".to_string(),
+    ));
 
     let choices = [
         "Fetch all pokemon",

@@ -1,6 +1,7 @@
 use super::entities::{Pokemon, PokemonNumber};
 
 pub mod in_memory_repository;
+pub mod mysql_repository;
 
 pub enum InsertError {
     Conflict,
