@@ -1,4 +1,3 @@
-use core::panic;
 use std::convert::TryFrom;
 
 use mysql::{params, prelude::Queryable, Opts};
