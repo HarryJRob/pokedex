@@ -117,10 +117,20 @@ impl PokemonTypes {
 
 #[derive(Clone, Debug)]
 enum PokemonType {
-    Electric,
     Fire,
     Water,
+    Grass,
+    Electric,
+    Ice,
+    Fighting,
+    Poison,
+    Ground,
     Flying,
+    Psychic,
+    Bug,
+    Rock,
+    Ghost,
+    Dragon,
 }
 
 impl TryFrom<String> for PokemonType {
@@ -128,10 +138,20 @@ impl TryFrom<String> for PokemonType {
 
     fn try_from(t: String) -> Result<Self, Self::Error> {
         match t.as_str() {
-            "Electric" => Ok(Self::Electric),
             "Fire" => Ok(Self::Fire),
             "Water" => Ok(Self::Water),
+            "Grass" => Ok(Self::Grass),
+            "Electric" => Ok(Self::Electric),
+            "Ice" => Ok(Self::Ice),
+            "Fighting" => Ok(Self::Fighting),
+            "Poison" => Ok(Self::Poison),
+            "Ground" => Ok(Self::Ground),
             "Flying" => Ok(Self::Flying),
+            "Psychic" => Ok(Self::Psychic),
+            "Bug" => Ok(Self::Bug),
+            "Rock" => Ok(Self::Rock),
+            "Ghost" => Ok(Self::Ghost),
+            "Dragon" => Ok(Self::Dragon),
             _ => Err(()),
         }
     }
@@ -140,10 +160,20 @@ impl TryFrom<String> for PokemonType {
 impl From<PokemonType> for String {
     fn from(t: PokemonType) -> String {
         String::from(match t {
-            PokemonType::Electric => "Electric",
             PokemonType::Fire => "Fire",
             PokemonType::Water => "Water",
+            PokemonType::Grass => "Grass",
+            PokemonType::Electric => "Electric",
+            PokemonType::Ice => "Ice",
+            PokemonType::Fighting => "Fighting",
+            PokemonType::Poison => "Poison",
+            PokemonType::Ground => "Ground",
             PokemonType::Flying => "Flying",
+            PokemonType::Psychic => "Psychic",
+            PokemonType::Bug => "Bug",
+            PokemonType::Rock => "Rock",
+            PokemonType::Ghost => "Ghost",
+            PokemonType::Dragon => "Dragon",
         })
     }
 }

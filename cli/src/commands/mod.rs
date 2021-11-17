@@ -20,7 +20,11 @@ pub fn prompt_name() -> Result<String, ()> {
 }
 
 pub fn prompt_type() -> Result<Vec<String>, ()> {
-    let types = ["Electric", "Fire", "Water", "Flying"];
+    let types = [
+        "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", "Ground", "Flying",
+        "Psychic", "Bug", "Rock", "Ghost", "Dragon",
+    ];
+
     match MultiSelect::new()
         .with_prompt("Pokemon types")
         .items(&types)
