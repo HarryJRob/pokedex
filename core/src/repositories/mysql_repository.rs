@@ -157,11 +157,9 @@ impl Repository for MySqlRepository {
         };
 
         let res = match connection.query_map(
-            r"SELECT p.pokemon_id, p.pokemon_name, t.type_name
-            FROM pokemons p
-            INNER JOIN pokemon_types pt ON p.pokemon_id = pt.pokemon_id
-            INNER JOIN types t ON pt.type_id = t.type_id",
-            |p: (u16, String, String)| p,
+            r"SELECT p.pokemon_id, p.pokemon_name
+            FROM pokemons p",
+            |p: (u16, String)| p,
         ) {
             Ok(result) => result,
             Err(_) => return Err(FetchAllError::Unknown),
@@ -204,6 +202,21 @@ impl Repository for MySqlRepository {
     }
 
     fn delete(&self, number: PokemonNumber) -> Result<(), DeleteError> {
-        todo!()
+        let mut connection = match self.pool.get_conn() {
+            Ok(connection) => connection,
+            Err(_) => return Err(DeleteError::Unknown),
+        };
+
+        let pokemon_id = u16::from(number);
+
+        let stmt = match connection.prep(r"DELETE FROM pokemons WHERE pokemon_id = :pokemon_id") {
+            Ok(stmt) => stmt,
+            Err(_) => return Err(DeleteError::Unknown),
+        };
+
+        match connection.exec_drop(stmt, params! { pokemon_id }) {
+            Ok(_) => Ok(()),
+            Err(_) => return Err(DeleteError::Unknown),
+        }
     }
 }
