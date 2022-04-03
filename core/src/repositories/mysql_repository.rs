@@ -1,9 +1,7 @@
-use std::convert::TryFrom;
-
-use mysql::{params, prelude::Queryable, Opts};
-
 use super::*;
-use crate::entities::*;
+use crate::domain::pokemon::*;
+use mysql::{params, prelude::Queryable, Opts};
+use std::convert::TryFrom;
 
 pub struct MySqlRepository {
     pool: mysql::Pool,
@@ -215,7 +213,7 @@ impl Repository for MySqlRepository {
 
         match connection.exec_drop(stmt, params! { pokemon_id }) {
             Ok(_) => Ok(()),
-            Err(_) => return Err(DeleteError::Unknown),
+            Err(_) => Err(DeleteError::Unknown),
         }
     }
 }

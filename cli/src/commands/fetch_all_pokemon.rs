@@ -1,4 +1,4 @@
-use core::{fetch_all_pokemon, repositories::Repository};
+use core::{repositories::Repository, use_cases::fetch_all_pokemon};
 use std::sync::Arc;
 
 #[derive(Debug)]

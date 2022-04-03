@@ -1,4 +1,4 @@
-use core::{delete_pokemon, repositories::Repository};
+use core::{repositories::Repository, use_cases::delete_pokemon};
 use std::sync::Arc;
 
 use super::prompt_number;

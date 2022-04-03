@@ -1,4 +1,4 @@
-use crate::entities::{Pokemon, PokemonName, PokemonNumber, PokemonTypes};
+use crate::domain::pokemon::{Pokemon, PokemonName, PokemonNumber, PokemonTypes};
 use crate::repositories::{InsertError, Repository};
 use std::{convert::TryFrom, sync::Arc};
 

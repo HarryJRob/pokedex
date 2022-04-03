@@ -1,5 +1,5 @@
 use crate::RepositoryState;
-use core::fetch_pokemon;
+use core::use_cases::fetch_pokemon;
 use rocket::http::Status;
 use rocket::serde::{json::Json, Serialize};
 use rocket::State;

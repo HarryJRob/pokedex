@@ -1,5 +1,5 @@
-use core::create_pokemon;
 use core::repositories::Repository;
+use core::use_cases::create_pokemon;
 use std::sync::Arc;
 
 use super::{prompt_name, prompt_number, prompt_type};
@@ -21,7 +21,7 @@ pub fn run(repo: Arc<dyn Repository>) {
         }
     };
 
-    match core::create_pokemon::execute(repo, req) {
+    match create_pokemon::execute(repo, req) {
         Ok(res) => println!("Pokemon '{}' created with id '{}'", res.name, res.number),
         Err(create_pokemon::Error::BadRequest) => println!("The request is invalid"),
         Err(create_pokemon::Error::Conflict) => println!("The Pokemon already exists"),

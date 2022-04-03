@@ -1,5 +1,5 @@
 use super::RepositoryState;
-use core::create_pokemon;
+use core::use_cases::create_pokemon;
 use rocket::http::Status;
 use rocket::serde::{json::Json, Deserialize, Serialize};
 use rocket::State;

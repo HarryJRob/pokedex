@@ -1,4 +1,4 @@
-use crate::entities::{Pokemon, PokemonNumber};
+use crate::domain::pokemon::{Pokemon, PokemonNumber};
 use crate::repositories::{FetchOneError, Repository};
 use std::{convert::TryFrom, sync::Arc};
 
@@ -34,15 +34,15 @@ pub fn execute(repo: Arc<dyn Repository>, req: Request) -> Result<Response, Erro
             name: String::from(name),
             types: Vec::<String>::from(types),
         }),
-        Err(FetchOneError::NotFound) => return Err(Error::NotFound),
-        Err(FetchOneError::Unknown) => return Err(Error::Unknown),
+        Err(FetchOneError::NotFound) => Err(Error::NotFound),
+        Err(FetchOneError::Unknown) => Err(Error::Unknown),
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::entities::{PokemonName, PokemonTypes};
+    use crate::domain::pokemon::{PokemonName, PokemonTypes};
     use crate::repositories::in_memory_repository::InMemoryRepository;
 
     impl Request {

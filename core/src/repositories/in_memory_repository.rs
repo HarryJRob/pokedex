@@ -1,10 +1,37 @@
-use crate::entities::{Pokemon, PokemonNumber};
+use crate::domain::pokemon::{Pokemon, PokemonNumber};
 use crate::repositories::{DeleteError, FetchAllError, FetchOneError, InsertError, Repository};
 use std::sync::Mutex;
 
 pub struct InMemoryRepository {
     error: bool,
     pokemons: Mutex<Vec<Pokemon>>,
+}
+
+impl InMemoryRepository {
+    pub fn new() -> Self {
+        let pokemons: Mutex<Vec<Pokemon>> = Mutex::new(vec![]);
+        Self {
+            error: false,
+            pokemons,
+        }
+    }
+
+    #[cfg(test)]
+    pub fn with_error(self) -> Self {
+        Self {
+            error: true,
+            ..self
+        }
+    }
+}
+
+impl Default for InMemoryRepository {
+    fn default() -> Self {
+        Self {
+            error: false,
+            pokemons: Mutex::new(vec![]),
+        }
+    }
 }
 
 impl Repository for InMemoryRepository {
@@ -79,23 +106,5 @@ impl Repository for InMemoryRepository {
 
         lock.remove(index);
         Ok(())
-    }
-}
-
-impl InMemoryRepository {
-    pub fn new() -> Self {
-        let pokemons: Mutex<Vec<Pokemon>> = Mutex::new(vec![]);
-        Self {
-            error: false,
-            pokemons,
-        }
-    }
-
-    #[cfg(test)]
-    pub fn with_error(self) -> Self {
-        Self {
-            error: true,
-            ..self
-        }
     }
 }

@@ -1,5 +1,5 @@
 use super::RepositoryState;
-use core::delete_pokemon;
+use core::use_cases::delete_pokemon;
 use rocket::http::Status;
 use rocket::serde::Serialize;
 use rocket::State;

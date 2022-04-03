@@ -1,4 +1,4 @@
-use crate::entities::PokemonNumber;
+use crate::domain::pokemon::PokemonNumber;
 use crate::repositories::{DeleteError, Repository};
 use std::{convert::TryFrom, sync::Arc};
 
@@ -19,14 +19,14 @@ pub fn execute(repo: Arc<dyn Repository>, req: Request) -> Result<(), Error> {
             Err(DeleteError::NotFound) => Err(Error::NotFound),
             Err(DeleteError::Unknown) => Err(Error::Unknown),
         },
-        _ => return Err(Error::BadRequest),
+        _ => Err(Error::BadRequest),
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::entities::Pokemon;
+    use crate::domain::pokemon::Pokemon;
     use crate::repositories::in_memory_repository::InMemoryRepository;
 
     impl Request {

@@ -1,4 +1,4 @@
-use core::{fetch_pokemon, repositories::Repository};
+use core::{repositories::Repository, use_cases::fetch_pokemon};
 use std::sync::Arc;
 
 use super::prompt_number;

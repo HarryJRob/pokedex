@@ -1,4 +1,4 @@
-use super::entities::{Pokemon, PokemonNumber};
+use crate::domain::pokemon::{Pokemon, PokemonNumber};
 
 pub mod in_memory_repository;
 pub mod mysql_repository;
