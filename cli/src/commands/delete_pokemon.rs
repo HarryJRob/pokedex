@@ -3,13 +3,6 @@ use std::sync::Arc;
 
 use super::prompt_number;
 
-#[derive(Debug)]
-struct Response {
-    number: u16,
-    name: String,
-    types: Vec<String>,
-}
-
 pub fn run(repo: Arc<dyn Repository>) {
     let number = prompt_number();
 
